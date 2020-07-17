@@ -28,21 +28,19 @@ public class MainActivity extends AppCompatActivity {
     LocationRequest mLocationRequest;
     LocationCallback mLocationCallBack;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         btnGetLastLocation = findViewById(R.id.btnGetLastLocation);
-        btnGetLastLocationUpdate = findViewById(R.id.btnGetLocationUpdate);
+        btnGetLastLocationUpdate = findViewById(R.id.btnGetLastLocationUpdate);
         btnRemoveLocationUpdate = findViewById(R.id.btnRemoveLocationUpdate);
 
         client = LocationServices.getFusedLocationProviderClient(MainActivity.this);
 
-        final FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(this);
-
-
-        final LocationRequest mLocationRequest = LocationRequest.create();
+         mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         mLocationRequest.setInterval(10000);
@@ -50,18 +48,23 @@ public class MainActivity extends AppCompatActivity {
         mLocationRequest.setSmallestDisplacement(100);
 
 
-
-
-        LocationCallback mLocationCallback = new LocationCallback() {
+         mLocationCallBack = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 if (locationResult != null) {
                     Location data = locationResult.getLastLocation();
                     double lat = data.getLatitude();
                     double lng = data.getLongitude();
+
+                    String msg = "New Loc Detected \n"
+                            + "Lat : " + lat +
+                            " Lng : " + lng;
+                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+
                 }
             };
         };
+
 
 
 
@@ -88,11 +91,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         btnGetLastLocationUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (checkPermission() == true) {
-                    client.requestLocationUpdates(mLocationRequest, mLocationCallBack, null);
+                   client.requestLocationUpdates(mLocationRequest, mLocationCallBack, null);
                 }
             }
         });
